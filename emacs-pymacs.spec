@@ -7,7 +7,7 @@
 
 Name:           emacs-%{pkg}
 Version:        0.23
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Emacs and Python integration framework
 Group:          Development/Libraries
 License:        GPLv2+
@@ -94,6 +94,9 @@ install -pm 644 %{SOURCE1} %{buildroot}/%{_emacs_sitestartdir}/
 %{_emacs_sitelispdir}/%{pkg}.el
 
 %changelog
+* Fri Jan 13 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.23-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_17_Mass_Rebuild
+
 * Tue May 10 2011 Stanislav Ochotnicky <sochotnicky@redhat.com> - 0.23-3
 - Fix license tag to GPLv2+
 - Use name macro where appropriate
