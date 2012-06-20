@@ -1,13 +1,8 @@
-%if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)
-%{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
-%{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
-%endif
-
 %global pkg pymacs
 
 Name:           emacs-%{pkg}
-Version:        0.23
-Release:        4%{?dist}
+Version:        0.25
+Release:        1%{?dist}
 Summary:        Emacs and Python integration framework
 Group:          Development/Libraries
 License:        GPLv2+
@@ -59,7 +54,7 @@ sed -i 's:PYSETUP =.*:PYSETUP=%{__python} setup.py:g' Makefile
 sed -i 's:rst2latex.py:rst2latex:' Makefile
 
 # remove shebangs from library
-sed -i '/#!.*/ {d}' Pymacs/pymacs.py __init__.py.in
+sed -i '/#!.*/ {d}' Pymacs.py.in
 
 # remove executable bits from docs
 chmod -x contrib/rebox/rebox
@@ -84,8 +79,8 @@ install -pm 644 %{SOURCE1} %{buildroot}/%{_emacs_sitestartdir}/
 
 
 %files
-%doc COPYING README THANKS contrib TODO ChangeLog pymacs.pdf pymacs.rst
-%{python_sitelib}/Pymacs/
+%doc COPYING README THANKS contrib TODO pymacs.pdf pymacs.rst
+%{python_sitelib}/Pymacs.py*
 %{python_sitelib}/*.egg-info
 %{_emacs_sitelispdir}/%{pkg}.elc
 %{_emacs_sitestartdir}/*.el
@@ -94,6 +89,9 @@ install -pm 644 %{SOURCE1} %{buildroot}/%{_emacs_sitestartdir}/
 %{_emacs_sitelispdir}/%{pkg}.el
 
 %changelog
+* Wed Jun 20 2012 Stanislav Ochotnicky <sochotnicky@redhat.com> - 0.25-1
+- Update to latest upstream version (0.25)
+
 * Fri Jan 13 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.23-4
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_17_Mass_Rebuild
 
@@ -109,4 +107,3 @@ install -pm 644 %{SOURCE1} %{buildroot}/%{_emacs_sitestartdir}/
 
 * Wed May  4 2011 Stanislav Ochotnicky <sochotnicky@redhat.com> - 0.23-1
 - Initial version of the package
-
