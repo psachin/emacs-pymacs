@@ -17,7 +17,18 @@ BuildRequires:  python2-devel
 BuildRequires:  python-setuptools
 # to generate pdf
 BuildRequires:  python-docutils
-BuildRequires:  texlive-latex
+BuildRequires:  texlive-latex-bin-bin
+BuildRequires:  texlive-texconfig
+BuildRequires:  texlive-metafont-bin
+BuildRequires:  texlive-cm
+BuildRequires:  texlive-cmap
+BuildRequires:  texlive-ec
+BuildRequires:  texlive-times
+BuildRequires:  texlive-pdftex-def
+BuildRequires:  texlive-pslatex
+BuildRequires:  texlive-courier
+BuildRequires:  texlive-dvips
+BuildRequires:  texlive-amsfonts
 
 # for tests
 BuildRequires:  emacs
@@ -89,6 +100,9 @@ install -pm 644 %{SOURCE1} %{buildroot}/%{_emacs_sitestartdir}/
 %{_emacs_sitelispdir}/%{pkg}.el
 
 %changelog
+* Thu Feb 14 2013 Stanislav Ochotnicky <sochotnicky@redhat.com> - 0.25-3
+- Fix BuildRequires to pull in proper LaTeX packages
+
 * Wed Feb 13 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.25-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_19_Mass_Rebuild
 
