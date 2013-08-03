@@ -2,7 +2,7 @@
 
 Name:           emacs-%{pkg}
 Version:        0.25
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Emacs and Python integration framework
 Group:          Development/Libraries
 License:        GPLv2+
@@ -100,6 +100,9 @@ install -pm 644 %{SOURCE1} %{buildroot}/%{_emacs_sitestartdir}/
 %{_emacs_sitelispdir}/%{pkg}.el
 
 %changelog
+* Sat Aug 03 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.25-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
+
 * Thu Feb 14 2013 Stanislav Ochotnicky <sochotnicky@redhat.com> - 0.25-3
 - Fix BuildRequires to pull in proper LaTeX packages
 
