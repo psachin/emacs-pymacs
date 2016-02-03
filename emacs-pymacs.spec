@@ -2,7 +2,7 @@
 
 Name:           emacs-%{pkg}
 Version:        0.25
-Release:        6%{?dist}
+Release:        7%{?dist}
 Summary:        Emacs and Python integration framework
 Group:          Development/Libraries
 License:        GPLv2+
@@ -100,6 +100,9 @@ install -pm 644 %{SOURCE1} %{buildroot}/%{_emacs_sitestartdir}/
 %{_emacs_sitelispdir}/%{pkg}.el
 
 %changelog
+* Wed Feb 03 2016 Fedora Release Engineering <releng@fedoraproject.org> - 0.25-7
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_24_Mass_Rebuild
+
 * Wed Jun 17 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.25-6
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
 
