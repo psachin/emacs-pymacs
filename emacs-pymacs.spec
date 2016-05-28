@@ -1,22 +1,27 @@
 %global pkg pymacs
+%global sum Emacs and Python integration framework
+%global lang C.UTF-8
 
 Name:           emacs-%{pkg}
 Version:        0.25
-Release:        7%{?dist}
-Summary:        Emacs and Python integration framework
+Release:        8%{?dist}
+Summary:        %{sum}
 Group:          Development/Libraries
 License:        GPLv2+
-URL:            http://pymacs.progiciels-bpi.ca/
-# git clone https://github.com/pinard/Pymacs.git
-# git archive --prefix="emacs-pymacs-0.23/" --format=tar v0.23 | xz > emacs-pymacs-0.23.tar.xz
-Source0:        %{name}-%{version}.tar.xz
+URL:            https://github.com/pinard/Pymacs
+Source0:        https://github.com/pinard/Pymacs/archive/v0.25.tar.gz
 Source1:        %{pkg}-init.el
 
 BuildArch:      noarch
-BuildRequires:  python2-devel
-BuildRequires:  python-setuptools
+BuildRequires:  python-devel
+BuildRequires:  python2-setuptools
+BuildRequires:  python3-devel
+BuildRequires:  python3-setuptools
+# for tests
+BuildRequires:  emacs
 # to generate pdf
 BuildRequires:  python-docutils
+BuildRequires:  python3-docutils
 BuildRequires:  texlive-latex-bin-bin
 BuildRequires:  texlive-texconfig
 BuildRequires:  texlive-metafont-bin
@@ -30,55 +35,55 @@ BuildRequires:  texlive-courier
 BuildRequires:  texlive-dvips
 BuildRequires:  texlive-amsfonts
 
-# for tests
-BuildRequires:  emacs
-
 Requires:       python2
+Requires:       python3
 Requires:       emacs(bin) >= %{_emacs_version}
+
+%description
+Pymacs is a powerful tool which can be started from Emacs and allows
+both-way communication between Emacs Lisp and Python. Pymacs aims
+Python as an extension language for Emacs rather than the other way
+around. For more info, visit %{url}.
 
 
 %package -n %{name}-el
-Summary:	Elisp source files for %{pkg} under GNU Emacs
-Group:          Development/Libraries
-Requires:	%{name} = %{version}-%{release}
+Summary:  Elisp source files for %{pkg} under GNU Emacs
+Group:  Development/Libraries
+Requires:  %{name} = %{version}-%{release}
 
 %description -n %{name}-el
-This package contains the elisp source files for %{pkg} under GNU Emacs. You
-do not need to install this package to run %{name}. Install the %{name}
-package to use %{pkg} with GNU Emacs.
-
-
-%description
-Pymacs is a powerful tool which, once started from Emacs, allows
-both-way communication between Emacs Lisp and Python. Pymacs aims
-Python as an extension language for Emacs rather than the other way
-around, and this asymmetry is reflected in some design choices. Within
-Emacs Lisp code, one may load and use Python modules. Python functions
-may themselves use Emacs services, and handle Emacs Lisp objects kept
-in Emacs Lisp space.
+This package contains the elisp source files for %{pkg} under GNU
+Emacs. You do not need to install this package to run %{name}.
 
 
 %prep
-%setup -q
+%setup -q -n Pymacs-%{version}
+
 # make sure we are using right interpreter to build
-sed -i 's:PYSETUP =.*:PYSETUP=%{__python} setup.py:g' Makefile
+sed -i 's:^PYTHON =.*:PYTHON=%{__python}:g' Makefile
+sed -i 's:^PYTHON =.*:PYTHON=%{__python3}:g' Makefile
+sed -i 's:except ProtocolError, exception:except ProtocolError as exception:g' Pymacs.py.in
 sed -i 's:rst2latex.py:rst2latex:' Makefile
 
 # remove shebangs from library
-sed -i '/#!.*/ {d}' Pymacs.py.in
+sed -i '/^#!.*/ {d}' Pymacs.py.in
+sed -i '/^#!.*/ {d}' pppp
 
 # remove executable bits from docs
 chmod -x contrib/rebox/rebox
 
+
 %build
+# https://github.com/pinard/Pymacs/issues/57
+export LANG=%{lang}
 make %{?_smp_mflags} all pymacs.pdf
 %{_emacs_bytecompile} %{pkg}.el
 
-%check
-make check
 
 %install
 %{__python} setup.py install --skip-build --root %{buildroot}
+export LANG=%{lang}
+%py3_install
 
 install -dm 755 %{buildroot}/%{_emacs_sitelispdir}/
 install -pm 644 %{pkg}.elc %{buildroot}/%{_emacs_sitelispdir}/
@@ -89,10 +94,19 @@ install -dm 755 %{buildroot}/%{_emacs_sitestartdir}/
 install -pm 644 %{SOURCE1} %{buildroot}/%{_emacs_sitestartdir}/
 
 
+%check
+export LANG=%{lang}
+make check
+
+
 %files
-%doc COPYING README THANKS contrib TODO pymacs.pdf pymacs.rst
+%doc README THANKS contrib TODO pymacs.pdf pymacs.rst
+%license COPYING
 %{python_sitelib}/Pymacs.py*
 %{python_sitelib}/*.egg-info
+%{python3_sitelib}/Pymacs.py*
+%{python3_sitelib}/*.egg-info
+%{python3_sitelib}/__pycache__/Pymacs*
 %{_emacs_sitelispdir}/%{pkg}.elc
 %{_emacs_sitestartdir}/*.el
 
@@ -100,6 +114,9 @@ install -pm 644 %{SOURCE1} %{buildroot}/%{_emacs_sitestartdir}/
 %{_emacs_sitelispdir}/%{pkg}.el
 
 %changelog
+* Thu June 09 2016 Sachin Patil <psachin@redhat.com> - 0.25-8
+- Python3 support
+
 * Wed Feb 03 2016 Fedora Release Engineering <releng@fedoraproject.org> - 0.25-7
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_24_Mass_Rebuild
 
